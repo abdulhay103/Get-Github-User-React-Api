@@ -1,6 +1,8 @@
 import React from 'react';
 
 const Alert = ({ alertProps }) => {
+  console.log(alertProps);
+
   return (
     alertProps !== null && (
       <div className={`alert alert-${alertProps.type}`}>

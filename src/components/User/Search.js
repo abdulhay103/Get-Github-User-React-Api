@@ -1,34 +1,25 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-const Search = props => {
-  const [state, setState] = useState({
-    text: ''
-  });
+const Search = ({ props, setAlert, searchUsers, clearUsers, showClearBtn }) => {
+  const [text, setText] = useState('');
 
   const onChangeHandler = e => {
-    setState({ [e.target.name]: e.target.value });
+    setText(e.target.value);
   };
 
   const onSubmitHandler = e => {
     e.preventDefault();
-    if (state.text === '') {
-      props.setAlert('Please enter somethings!', 'danger');
+    if (text === '') {
+      setAlert('Please enter somethings!', 'danger');
     } else {
-      props.searchUsers(state.text);
-      setState({ text: '' });
+      searchUsers(text);
+      setText('');
     }
   };
 
   const clearUserHandaler = e => {
-    props.clearUsers(e);
-  };
-
-  Search.propsTypes = {
-    searchUsers: PropTypes.func.isRequired,
-    clearUsers: PropTypes.func.isRequired,
-    showClearBtn: PropTypes.bool.isRequired,
-    setAlert: PropTypes.func.isRequired
+    clearUsers(e);
   };
 
   return (
@@ -40,7 +31,7 @@ const Search = props => {
           className='form-control mb-2'
           name='text'
           placeholder='Search users...'
-          value={state.text}
+          value={text}
         />
         <input
           type='submit'
@@ -48,13 +39,20 @@ const Search = props => {
           className='btn btn-dark btn-block'
         />
       </form>
-      {props.showClearBtn && (
+      {showClearBtn && (
         <button onClick={clearUserHandaler} className='btn btn-light btn-block'>
           Clear
         </button>
       )}
     </div>
   );
+};
+
+Search.propsTypes = {
+  searchUsers: PropTypes.func.isRequired,
+  clearUsers: PropTypes.func.isRequired,
+  showClearBtn: PropTypes.bool.isRequired,
+  setAlert: PropTypes.func.isRequired
 };
 
 export default Search;

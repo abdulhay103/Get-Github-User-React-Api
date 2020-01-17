@@ -4,20 +4,21 @@ import Repos from '../Repos/Repos';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-const User = props => {
+const User = ({
+  props,
+  getSingleUser,
+  getSingleUserRepos,
+  userRepos,
+  match,
+  loading,
+  singleUser
+}) => {
   useEffect(() => {
     // console.log(props);
-    props.getSingleUser(props.match.params.login);
-    props.getSingleUserRepos(props.match.params.login);
+    getSingleUser(match.params.login);
+    getSingleUserRepos(match.params.login);
+    // eslint-disable-next-line
   }, []);
-
-  User.propTypes = {
-    loading: PropTypes.bool,
-    singleUser: PropTypes.object.isRequired,
-    getSingleUser: PropTypes.func.isRequired,
-    getSingleUserRepos: PropTypes.func.isRequired,
-    userRepos: PropTypes.array.isRequired
-  };
 
   const {
     name,
@@ -33,10 +34,7 @@ const User = props => {
     public_repos,
     public_gists,
     hireable
-  } = props.singleUser;
-
-  const { loading, userRepos } = props;
-  //console.log(hireable);
+  } = singleUser;
 
   if (loading) return <Spinner />;
 
@@ -57,7 +55,7 @@ const User = props => {
             <img
               className='card-img-top img-fluid'
               src={avatar_url}
-              alt='Card image'
+              alt='User'
               style={{ width: '80%', height: '180px' }}
             />
             <h5 className='card-title pt-3'>{name}</h5>
@@ -118,5 +116,13 @@ const User = props => {
       <Repos userRepos={userRepos} />
     </Fragment>
   );
+};
+
+User.propTypes = {
+  loading: PropTypes.bool,
+  singleUser: PropTypes.object.isRequired,
+  getSingleUser: PropTypes.func.isRequired,
+  getSingleUserRepos: PropTypes.func.isRequired,
+  userRepos: PropTypes.array.isRequired
 };
 export default User;

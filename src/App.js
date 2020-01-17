@@ -10,68 +10,67 @@ import Search from './components/User/Search';
 import Alert from './components/Layout/Alert';
 import About from './components/Pages/About';
 
-function App() {
-  const [state, setState] = useState({
-    users: [],
-    user: {},
-    repos: [],
-    loading: true,
-    alert: null
-  });
-
-  // Destructer State
-  const { users, user, repos, loading, alert } = state;
+const App = () => {
+  const [users, setUsers] = useState([]);
+  const [user, setUser] = useState({});
+  const [repos, setRepos] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState([]);
 
   useEffect(() => {
     const getDidMount = async () => {
+      setLoading(true);
       const show = await axios.get(
         `https://api.github.com/users?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`
       );
-      setState({ ...state, users: show.data, loading: false });
+      setUsers(show.data);
+      setLoading(false);
     };
     getDidMount();
+    // eslint-disable-next-line
   }, []);
-  // console.log(repos);
 
   // Search Github Users
   const SearchGitUsers = async text => {
-    setState({ ...state, loading: true });
+    setLoading(true);
     const show = await axios.get(
       `https://api.github.com/search/users?q=${text}&client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`
     );
-    setState({ ...state, users: show.data.items, loading: false });
-    // console.log(show);
+    setUsers(show.data.items);
+    setLoading(false);
   };
 
   // Get Single Github User
   const getSingleUser = async username => {
-    setState({ ...state, loading: true });
+    setLoading(true);
     const show = await axios.get(
       `https://api.github.com/users/${username}?&client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`
     );
-    console.log(show.data);
-
-    setState({ ...state, user: show.data, loading: false });
+    setUser(show.data);
+    setLoading(false);
   };
 
   // Get Single Github User Repos
   const getSingleUserRepos = async username => {
-    setState({ ...state, loading: true });
+    setLoading(true);
+
     const show = await axios.get(
-      `https://api.github.com/users/${username}/repos?per_page=7&sort=created:asc&client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`
+      `https://api.github.com/users/${username}/repos?per_page=5&sort=created:asc&client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`
     );
-    setState({ ...state, repos: show.data, loading: false });
+    setRepos(show.data);
+    setLoading(false);
   };
 
   // Claer All Users
   const clearUsers = () => {
-    setState({ ...state, users: [], loading: false });
+    setUsers([]);
+    setLoading(false);
   };
 
   //Set Alert Function
   const setAlertFun = (msg, type) => {
-    setState({ ...state, alert: { msg, type } });
-    setTimeout(() => setState({ ...state, alert: null }), 5000);
+    setAlert({ msg, type });
+    setTimeout(() => setAlert(null), 5000);
   };
   return (
     <Router>
@@ -115,6 +114,6 @@ function App() {
       </div>
     </Router>
   );
-}
+};
 
 export default App;
